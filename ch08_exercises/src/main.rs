@@ -19,6 +19,8 @@ fn main() {
             pig_latinify(String::from(word))
         )
     }
+
+    company_departments();
 }
 
 fn find_mean(arr: &Vec<i32>) -> f32 {
@@ -125,4 +127,39 @@ fn pig_latinify(original: String) -> String {
             parsed
         }
     }
+}
+
+// helper function to extract employee/department from string
+// Add Arun to Engineering => Arun, Engineering
+fn extract_employee_and_department(text: &str) -> (String, String) {
+    let words: Vec<&str> = text.split(' ').collect();
+
+    (words[1].to_string(), words[3].to_string())
+}
+
+fn company_departments() {
+    let info = [
+        "Add Arun to Engineering",
+        "Add Sally to Engineering",
+        "Add Amir to Sales",
+    ];
+    // info on departments and its employees
+    let mut ledger: HashMap<String, Vec<String>> = HashMap::new();
+
+    for word in info.iter() {
+        let (employee, department) = extract_employee_and_department(&word);
+        // we will check if the department already has some people
+        // if there are existing employee, add employee to existing employees
+        match ledger.get_mut(&String::from(&department)) {
+            Some(existing_employees) => {
+                existing_employees.push(String::from(&employee));
+            }
+            // no existing employees
+            _ => {
+                ledger.insert(String::from(&department), vec![String::from(&employee)]);
+            }
+        }
+    }
+
+    println!("porumai ... ledger {:?}", ledger);
 }
